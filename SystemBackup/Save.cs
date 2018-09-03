@@ -17,12 +17,17 @@ public class Save
 
     private Dictionary<string, object> keysAndValues = new Dictionary<string, object>();
 
-    public Save(string Name, DateTime Date, byte[] RawImages)
+    public Save(string Name, DateTime Date)
     {
         this.Name = Name;
-        this.RawImages = RawImages;
         this.Date = Date;
     }
+
+    public void SetTexture(byte[] RawImages)
+    {
+        this.RawImages = RawImages;
+    }
+
 
     public Save(byte[] Data)
     {
@@ -35,30 +40,24 @@ public class Save
         {
             using (BinaryReader Reader = new BinaryReader(ms))
             {
-                Debug.Log("1");
-
+                
                 if (Reader.ReadString() != SystemBackup.BuildID)
                     throw new Exception("BuildID is not valide");
 
                 this.Name = Reader.ReadString();
-
-                Debug.Log("2");
+                
                 length = Reader.ReadInt32();
                 this.RawImages = Reader.ReadBytes(length);
-
-                Debug.Log("3");
+                
                 length = Reader.ReadInt32();
 
-                Debug.Log("4 :" + length);
                 for (int i = 0; i< length-1; i++)
                 {
                     key = Reader.ReadString();
-                    Debug.Log("5 :" + key);
-
                     IFormatter formatter = new BinaryFormatter();
                     length = Reader.ReadInt32();
                     data = Reader.ReadBytes(length);
-                    Debug.Log("6 :" + length);
+                    
                     using (MemoryStream MsSerialize = new MemoryStream(data))
                     {
                         value = formatter.Deserialize(MsSerialize);

@@ -67,8 +67,9 @@ public static class SystemBackup {
         return SaveFiles.ToArray();
     }
 
-    public static void WriteSave(this Save Save, int id = -1)
+    public static void WriteSave(this Save Save, byte[] RawImages, int id = -1)
     {
+        Save.SetTexture(RawImages);
         if (id == -1)
             id = Countsave;
 

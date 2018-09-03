@@ -16,7 +16,7 @@ public class MenuPlay : MonoBehaviour {
     {
         if (SystemBackup.SaveSelect == null)
         {
-            _Save = new Save("Test", new DateTime(), toTexture2D(saveImg).EncodeToPNG());
+            _Save = new Save("Test", new DateTime());
             id = -1;
         }
         else
@@ -45,7 +45,7 @@ public class MenuPlay : MonoBehaviour {
     public void Quite()
     {
         if(_Save!=null)
-            _Save.WriteSave();
+            _Save.WriteSave(toTexture2D(saveImg).EncodeToPNG());
         SceneManager.LoadScene("MainMenu");
     }
 }

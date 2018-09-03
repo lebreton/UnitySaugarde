@@ -57,6 +57,7 @@ public static class SystemBackup {
         foreach(string file in PathFilesaves)
         {
             FileInfo Info = new FileInfo(file);
+            Debug.Log(Info.Name);
             if (Info.Extension == ".save")
                 SaveFiles.Add(new Save(File.ReadAllBytes(file)));
         }

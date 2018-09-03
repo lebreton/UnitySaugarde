@@ -35,23 +35,30 @@ public class Save
         {
             using (BinaryReader Reader = new BinaryReader(ms))
             {
+                Debug.Log("1");
+
                 if (Reader.ReadString() != SystemBackup.BuildID)
                     throw new Exception("BuildID is not valide");
 
                 this.Name = Reader.ReadString();
 
+                Debug.Log("2");
                 length = Reader.ReadInt32();
                 this.RawImages = Reader.ReadBytes(length);
 
+                Debug.Log("3");
                 length = Reader.ReadInt32();
 
-                for(int i = 0; i< length; i++)
+                Debug.Log("4 :" + length);
+                for (int i = 0; i< length-1; i++)
                 {
                     key = Reader.ReadString();
+                    Debug.Log("5 :" + key);
+
                     IFormatter formatter = new BinaryFormatter();
                     length = Reader.ReadInt32();
                     data = Reader.ReadBytes(length);
-
+                    Debug.Log("6 :" + length);
                     using (MemoryStream MsSerialize = new MemoryStream(data))
                     {
                         value = formatter.Deserialize(MsSerialize);
@@ -69,6 +76,7 @@ public class Save
         {
             using (BinaryWriter Writer = new BinaryWriter(ms))
             {
+                Debug.Log("test");
                 Writer.Write((String)SystemBackup.BuildID);
                 Writer.Write((String)Name);
                 Writer.Write((Int32)RawImages.Length);

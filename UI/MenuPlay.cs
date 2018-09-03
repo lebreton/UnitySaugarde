@@ -9,7 +9,10 @@ public class MenuPlay : MonoBehaviour {
     public RenderTexture saveImg;
     public Save _Save;
     public int id = -1;
-    public void Save()
+
+    public GameObject Player;
+
+    public void Awake()
     {
         if (SystemBackup.SaveSelect == null)
         {
@@ -21,6 +24,13 @@ public class MenuPlay : MonoBehaviour {
             _Save = SystemBackup.SaveSelect.SaveSelect;
             id = SystemBackup.SaveSelect.id;
         }
+
+       Player.transform.position = _Save.GetValue<Vector3>("Player");
+    }
+
+    public void Save()
+    {
+        _Save.SetValue<Vector3>("Player", Player.transform.position);
     }
 
     Texture2D toTexture2D(RenderTexture rTex)

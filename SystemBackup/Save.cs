@@ -100,6 +100,11 @@ public class Save
 
     public T GetValue<T>(string key)
     {
+        if (!keysAndValues.ContainsKey(key))
+        {
+            return default(T);
+        }
+
         Type type = keysAndValues[key].GetType();
         if (!typeof(T).IsSerializable)
         {
@@ -139,7 +144,6 @@ public class Save
 
                 if (constructorInfoObj != null)
                 {
-                    Debug.Log(constructorInfoObj.Name);
                     SerializableForsing = constructorInfoObj.Invoke(new object[] { value });
                 }
             }

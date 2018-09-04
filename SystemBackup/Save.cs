@@ -11,9 +11,9 @@ using UnityEngine;
 
 public class Save
 {
-    public string Name;
-    public byte[] RawImages;
-    public DateTime Date;
+    public string Name = "";
+    public byte[] RawImages = new byte[0];
+    public DateTime Date = DateTime.Now;
 
     private Dictionary<string, object> keysAndValues = new Dictionary<string, object>();
 
@@ -27,7 +27,6 @@ public class Save
     {
         this.RawImages = RawImages;
     }
-
 
     public Save(byte[] Data)
     {
@@ -50,22 +49,43 @@ public class Save
                 this.RawImages = Reader.ReadBytes(length);
                 
                 length = Reader.ReadInt32();
-
-                for (int i = 0; i< length-1; i++)
-                {
-                    key = Reader.ReadString();
-                    IFormatter formatter = new BinaryFormatter();
-                    length = Reader.ReadInt32();
-                    data = Reader.ReadBytes(length);
-                    
-                    using (MemoryStream MsSerialize = new MemoryStream(data))
-                    {
-                        value = formatter.Deserialize(MsSerialize);
-                    }
-
-                    keysAndValues.Add(key, value);
-                 }
+                Debug.Log("length :" + length);
+                ReadkeysAndValues(Reader, length);
             }
+        }
+    }
+
+    private void ReadkeysAndValues(BinaryReader Reader, int dlength)
+    {
+        string key = "";
+        object value = null;
+        int length = 0;
+        byte[] data = new byte[0];
+
+        Action Call = new Action(() =>
+        {
+            key = Reader.ReadString();
+
+            IFormatter formatter = new BinaryFormatter();
+            length = Reader.ReadInt32();
+            data = Reader.ReadBytes(length);
+
+            using (MemoryStream MsSerialize = new MemoryStream(data))
+            {
+                value = formatter.Deserialize(MsSerialize);
+            }
+
+            keysAndValues.Add(key, value);
+        });
+
+        if (dlength > 1)
+            for (int i = 0; i < dlength - 1; i++)
+            {
+                Call();
+            }
+        else
+        {
+            Call();
         }
     }
 
@@ -78,8 +98,10 @@ public class Save
                 Debug.Log("test");
                 Writer.Write((String)SystemBackup.BuildID);
                 Writer.Write((String)Name);
+
                 Writer.Write((Int32)RawImages.Length);
                 Writer.Write((Byte[])RawImages);
+
                 Writer.Write((Int32)keysAndValues.Count);
 
                 foreach (KeyValuePair<string, object> keyAndValue in keysAndValues)
@@ -97,7 +119,7 @@ public class Save
                         Writer.Write((Byte[])Data);
                     }
                 }
-
+                Writer.Write(new byte[1024]);
                 ms.Flush();
                 return ms.ToArray();
             }

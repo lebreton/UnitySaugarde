@@ -26,6 +26,9 @@ public class MenuPlay : MonoBehaviour {
         }
 
        Player.transform.position = _Save.GetValue<Vector3>("Player");
+
+        Debug.Log(_Save.GetValue<Vector3>("Player"));
+
     }
 
     public void Save()

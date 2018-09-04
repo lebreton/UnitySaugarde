@@ -115,6 +115,9 @@ public class Save
 
                         byte[] Data = MsSerialize.ToArray();
 
+                        if (Data.Length > 1024)
+                            throw new Exception("if you want to save the whole earth use a database");
+
                         Writer.Write((Int32)Data.Length);
                         Writer.Write((Byte[])Data);
                     }
@@ -158,6 +161,9 @@ public class Save
 
     public void SetValue<T>(string key, T value)
     {
+        if (keysAndValues.Count > 500)
+            throw new Exception("Se system is not made to save block minecraft");
+
         object SerializableForsing = null;
 
         if (!value.GetType().IsSerializable)
